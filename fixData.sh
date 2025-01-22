@@ -4,7 +4,7 @@ if ! test -e "server.properties"; then
 	echo "把我放在服务端根目录下,或第一次运行服务端"
 	exit 1
 fi
-
+123
 #获取存档目录名
 levelName=`cat server.properties|grep level-name|awk -F'=' '{print $2}'`
 echo "levelName: $levelName"
