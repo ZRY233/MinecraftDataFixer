@@ -1,7 +1,16 @@
 #!/bin/bash
 
-if ! test -e "server.properties"; then
-	echo "把我放在服务端根目录下,或第一次运行服务端"
+if test "$1" == ""; then
+	echo "第一个参数指定脚本运行目录"
+	if ! test -e "server.properties"; then
+		echo "没有找到server.properties文件,把我放在服务端根目录下,或第一次运行服务端"
+		exit 1
+	fi
+elif test -e "$1"; then
+	echo "切换运行目录至$1"
+	cd "$1"
+else
+	echo "${1}目录不存在"
 	exit 1
 fi
 
@@ -23,21 +32,28 @@ do
 	map["$i,uuid"]=`jq -r ".[$i].uuid" usercache.json`
 	map["$i,name"]=`jq -r ".[$i].name" usercache.json`
 	map["$i,arch"]=`jq -r 'length' "$levelName/advancements/${map["$i,uuid"]}.json"`
+	map["$i,stat"]=`jq -r '.stats|map_values(length)|add' "$levelName/stats/${map["$i,uuid"]}.json"`
 
 	if test -z ${map["$i,arch"]}; then
 		echo "${map["$i,uuid"]}.json打开失败,Archs数据被重置为-1"
 		map["$i,arch"]=-1
 	fi
+
+	if test -z ${map["$i,stat"]}; then
+	echo "${map["$i,uuid"]}.json打开失败,Stats数据被重置为-1"
+	map["$i,stat"]=-1
+	fi
 done
 echo
 
-echo "Archs也就是玩家获得的成就数,用来辨别新老数据的"
+echo "Archs也就是玩家获得的成就及配方数,用来辨别新老数据的"
+echo "Stats也就是玩家拥有的统计信息条数,用处同上"
 #输出一个表格
 echo "Player Data Table:"
-printf '%-3s\t%-36s\t%-5s\t%s\n' Num UUID Archs Name
+printf '%-3s\t%-36s\t%-5s\t%-5s\t%s\n' Num UUID Archs Stats Name
 for i in `seq 0 $(($userCount-1))`
 do
-	printf '%d\t%s\t%s\t%s\n' $(($i+1)) ${map["$i,uuid"]} ${map["$i,arch"]} ${map["$i,name"]}
+	printf '%d\t%s\t%s\t%s\t%s\n' $(($i+1)) ${map["$i,uuid"]} ${map["$i,arch"]} ${map["$i,stat"]} ${map["$i,name"]}
 done
 if test $userCount -eq 1; then
 	echo "哥们,只有一个账户"
@@ -56,7 +72,10 @@ do
 	fi
 
 	if test ${map["$(($src-1)),arch"]} -lt ${map["$(($des-1)),arch"]}; then
-		echo "被替换账户的成就数比替换账户多哦,你确定是正确的吗?"
+		echo "被替换账户的成就和配方数比替换账户多哦,你确定是正确的吗?"
+	fi
+	if test ${map["$(($src-1)),stat"]} -lt ${map["$(($des-1)),stat"]}; then
+		echo "被替换账户的统计数据数比替换账户多哦,你确定是正确的吗?"
 	fi
 
 	read -p "你确定要把 Num${src} 的数据替换到 Num${des} 上?(输入Yes继续,其他值重来)" con

@@ -71,5 +71,5 @@ if ! screen -ls|grep -q "$screenName"; then
 fi
 
 if screen -S "$screenName" -X stuff "cd $serverRootDir;./r\n"; then
-    echo "服务端启动中"
+    echo "服务端将会启动在screen窗口 ${screenName} 中"
 fi
