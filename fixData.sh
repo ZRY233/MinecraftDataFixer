@@ -1,26 +1,22 @@
 #!/bin/bash
 
-
-
-
-
-
-
-
-
-
-
-
-
+if ! test -e "server.properties"; then
+	echo "把我放在服务端根目录下,或第一次运行服务端"
+	exit 1
+fi
 
 #获取存档目录名
 levelName=`cat server.properties|grep level-name|awk -F'=' '{print $2}'`
 echo "levelName: $levelName"
+if ! test -e "$levelName"; then
+	echo "当前目录下没有找到存档目录哦"
+	exit 1
+fi
 
 declare -A map	#这是一个map而不是list
 
 userCount=`jq 'length' usercache.json`
-echo "userCount: $userCount"
+echo "usersCount: $userCount"
 
 for i in `seq 0 $(($userCount-1))`
 do
@@ -30,6 +26,7 @@ do
 done
 echo
 
+echo "Archs也就是玩家获得的成就数,用来辨别新老数据的"
 #输出一个表格
 echo "Player Data Table:"
 printf '%-3s\t%-36s\t%-5s\t%s\n' Num UUID Archs Name
@@ -51,6 +48,10 @@ do
 	else
 		echo "输入有效的数字"
 		continue
+	fi
+
+	if test ${map["$(($src-1)),arch"]} -le ${map["$(($des-1)),arch"]}; then
+		echo "被替换账户的成就数比替换账户多哦,你确定是正确的吗?"
 	fi
 
 	read -p "你确定要把 Num${src} 的数据替换到 Num${des} 上?(输入Yes继续,其他值重来)" con

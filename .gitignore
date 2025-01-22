@@ -1,3 +1,4 @@
+.gitignore
 banned-ips.json
 banned-players.json
 eula.txt
@@ -121,3 +122,4 @@ world/stats/AAAAAAAA-f29b-33dc-add8-16095effecc0.json
 world/stats/AAAAAAAA-f29b-33dc-add8-16095effecc0.json.backup
 world/stats/ac7a7c1e-f29b-33dc-add8-16095effecc0.json
 world/stats/ac7a7c1e-f29b-33dc-add8-16095effecc0.json.backup
+
