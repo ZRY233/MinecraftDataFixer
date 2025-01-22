@@ -23,6 +23,11 @@ do
 	map["$i,uuid"]=`jq -r ".[$i].uuid" usercache.json`
 	map["$i,name"]=`jq -r ".[$i].name" usercache.json`
 	map["$i,arch"]=`jq -r 'length' "$levelName/advancements/${map["$i,uuid"]}.json"`
+
+	if test -z ${map["$i,arch"]}; then
+		echo "${map["$i,uuid"]}.json打开失败,Archs数据被重置为-1"
+		map["$i,arch"]=-1
+	fi
 done
 echo
 
@@ -50,7 +55,7 @@ do
 		continue
 	fi
 
-	if test ${map["$(($src-1)),arch"]} -le ${map["$(($des-1)),arch"]}; then
+	if test ${map["$(($src-1)),arch"]} -lt ${map["$(($des-1)),arch"]}; then
 		echo "被替换账户的成就数比替换账户多哦,你确定是正确的吗?"
 	fi
 
