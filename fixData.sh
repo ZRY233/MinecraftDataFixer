@@ -86,55 +86,27 @@ done
 
 # playerdata stats advancements 
 
-
 read -p "是否要备份原始文件?(输入N不备份):" backup
 if ! test "$backup" == "N"; then
-	if cp "$levelName/advancements/${map["$(($src-1)),uuid"]}.json" \
-	"$levelName/advancements/${map["$(($src-1)),uuid"]}.json.backup"; then
-    	echo "文件备份完成	$levelName/advancements/${map["$(($src-1)),uuid"]}.json.backup"
-	fi
-
-	if cp "$levelName/advancements/${map["$(($des-1)),uuid"]}.json" \
-	"$levelName/advancements/${map["$(($des-1)),uuid"]}.json.backup"; then
-	    echo "文件备份完成	$levelName/advancements/${map["$(($des-1)),uuid"]}.json.backup"
-	fi
-
-	if cp "$levelName/stats/${map["$(($src-1)),uuid"]}.json" \
-	"$levelName/stats/${map["$(($src-1)),uuid"]}.json.backup"; then
-	    echo "文件备份完成	$levelName/stats/${map["$(($src-1)),uuid"]}.json.backup"
-	fi
-
-	if cp "$levelName/stats/${map["$(($des-1)),uuid"]}.json" \
-	"$levelName/stats/${map["$(($des-1)),uuid"]}.json.backup"; then
-    	echo "文件备份完成	$levelName/stats/${map["$(($des-1)),uuid"]}.json.backup"
-	fi
-
-	if cp "$levelName/playerdata/${map["$(($src-1)),uuid"]}.dat" \
-	"$levelName/playerdata/${map["$(($src-1)),uuid"]}.dat.backup"; then
-    	echo "文件备份完成	$levelName/playerdata/${map["$(($src-1)),uuid"]}.dat.backup"
-	fi
-
-	if cp "$levelName/playerdata/${map["$(($des-1)),uuid"]}.dat" \
-	"$levelName/playerdata/${map["$(($des-1)),uuid"]}.dat.backup"; then
-    	echo "文件备份完成	$levelName/playerdata/${map["$(($des-1)),uuid"]}.dat.backup"
-	fi
-
+	for dir in 'playerdata' 'stats' 'advancements';
+	do
+		for sd in $src $des;
+		do
+			fileName=`ls "$levelName/$dir"|grep "${map["$(($sd-1)),uuid"]}"|sort|head -n 1`
+			if cp "$levelName/$dir/$fileName" "$levelName/$dir/$fileName.backup"; then
+				echo "文件备份完成	$fileName.backup"
+			fi
+		done
+	done
 fi
 
 echo -e "\n开始替换数据......\n"
 
-if cp "$levelName/advancements/${map["$(($src-1)),uuid"]}.json" \
-"$levelName/advancements/${map["$(($des-1)),uuid"]}.json"; then
-	echo "文件替换完成	advancements"
-fi
-
-if cp "$levelName/stats/${map["$(($src-1)),uuid"]}.json" \
-"$levelName/stats/${map["$(($des-1)),uuid"]}.json"; then
-	echo "文件替换完成	stats"
-fi
-
-if cp "$levelName/playerdata/${map["$(($src-1)),uuid"]}.dat" \
-"$levelName/playerdata/${map["$(($des-1)),uuid"]}.dat"; then
-	echo "文件替换完成	playerdata"
-fi
-
+for dir in 'playerdata' 'stats' 'advancements';
+do
+	fileNameSrc=`ls "$levelName/$dir"|grep "${map["$(($src-1)),uuid"]}"|sort|head -n 1`
+	fileNameDes=`ls "$levelName/$dir"|grep "${map["$(($des-1)),uuid"]}"|sort|head -n 1`
+	if cp "$levelName/$dir/${fileNameSrc}" "$levelName/$dir/${fileNameDes}"; then
+		echo "文件替换完成	$dir"
+	fi
+done
