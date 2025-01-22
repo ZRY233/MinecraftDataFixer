@@ -87,8 +87,8 @@ done
 # playerdata stats advancements 
 
 
-read -p "是否要备份原始文件?(输入Y备份,其他值不备份):" backup
-if test "$backup" == "Y"; then
+read -p "是否要备份原始文件?(输入N不备份):" backup
+if ! test "$backup" == "N"; then
 	if cp "$levelName/advancements/${map["$(($src-1)),uuid"]}.json" \
 	"$levelName/advancements/${map["$(($src-1)),uuid"]}.json.backup"; then
     	echo "文件备份完成	$levelName/advancements/${map["$(($src-1)),uuid"]}.json.backup"
