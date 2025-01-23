@@ -24,7 +24,9 @@ if test "$rconPassword" == ""; then
 fi
 
 if mcrcon -P "$rconPort" -p "$rconPassword" save-all stop >/dev/null 2>&1; then
-    echo "服务端已关闭"
+    echo "已发送stop命令"
+elif test $? -eq 127; then
+    echo "没有找到mcronc程序"
 else
     echo "服务端已关闭或连接失败"
 fi
