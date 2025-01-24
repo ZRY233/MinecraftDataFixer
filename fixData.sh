@@ -1,5 +1,8 @@
 #!/bin/bash
 
+#本脚本用来快速修复因UUID不一致导致的玩家数据错误问题
+#https://github.com/ZRY233/MinecraftDataFixer
+
 if test "$1" == ""; then
 	echo "第一个参数指定脚本运行目录"
 	if ! test -e "server.properties"; then

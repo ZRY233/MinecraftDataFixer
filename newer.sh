@@ -1,8 +1,10 @@
 #!/bin/bash
 
-serverRootDir="puremc"
-prefix="died"
-targetDir="experience"
+#本脚本用来自动启动关闭服务端并在指定位置创建自定义前缀加序号的tar文件
+
+serverRootDir="puremc"  #服务端根目录名
+prefix="died" #备份文件前缀
+targetDir="experience" #备份文件储存位置
 screenName="pureMC-SCREEN"
 serverJar="server.jar"
 
@@ -24,11 +26,11 @@ if test "$rconPassword" == ""; then
 fi
 
 if mcrcon -P "$rconPort" -p "$rconPassword" save-all stop >/dev/null 2>&1; then
-    echo "已发送stop命令"
+    echo "已向服务端发送stop命令"
 elif test $? -eq 127; then
     echo "没有找到mcronc程序"
 else
-    echo "服务端已关闭或连接失败"
+    echo "服务端没有运行或连接失败"
 fi
 
 if ! test -e "$targetDir"; then
